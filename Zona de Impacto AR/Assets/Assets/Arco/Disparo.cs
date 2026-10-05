@@ -8,7 +8,9 @@ public class Disparo : MonoBehaviour
     public GameObject flecha;
 
     public float fuerza_flecha = 1500f;
-    public float fuerza_velocidad = 1.0f;
+
+    public float rango_disparo = 1.0f;
+    private float cooldawn_disparo = 0;
 
 
     void Start()
@@ -21,9 +23,19 @@ public class Disparo : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.V))
         {
-            GameObject newflecha;
+            if(Time.time > cooldawn_disparo)
+            {
+                GameObject newflecha;
 
-            newflecha = Instantiate(flecha, spawn_flecha.position, spawn_flecha.rotation);
+                newflecha = Instantiate(flecha, spawn_flecha.position, spawn_flecha.rotation);
+
+                newflecha.GetComponent<Rigidbody>().AddForce(spawn_flecha.forward * fuerza_flecha);
+
+                cooldawn_disparo = Time.time + cooldawn_disparo;
+
+                Destroy(newflecha,3);
+            }
+
 
 
         }
