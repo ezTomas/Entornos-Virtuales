@@ -40,7 +40,7 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
                     "initialStateCheck": false,
@@ -325,17 +325,6 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "46b24b8d-ceb8-4dfc-887d-eda5fbede400",
-                    "path": "Pulsar Pantalla",
-                    "interactions": "Tap",
-                    "processors": "",
-                    "groups": "",
                     "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1017,6 +1006,35 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Tactil",
+            "id": "d8dedb3e-298c-4f8f-b3a6-614b959658a3",
+            "actions": [
+                {
+                    "name": "Toque",
+                    "type": "Button",
+                    "id": "c9440c04-162a-4022-bf2e-4f7b5062c028",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3cfcbd3d-c19e-4114-a165-f2a2e182cd95",
+                    "path": "<Touchscreen>/primaryTouch/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toque",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

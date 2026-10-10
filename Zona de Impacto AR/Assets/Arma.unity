@@ -208,6 +208,7 @@ MonoBehaviour:
   flecha: {fileID: 4195807733008543825, guid: 2feb4716d2294394581836b1d5692c35, type: 3}
   fuerza_flecha: 1500
   rango_disparo: 1
+  ola: {fileID: 640012454}
 --- !u!1 &1143698001
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +296,7 @@ Transform:
   m_GameObject: {fileID: 1143698001}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.74513835, z: -0, w: 0.66690993}
-  m_LocalPosition: {x: 5.53, y: 0.76, z: -6.05}
+  m_LocalPosition: {x: 5.43, y: 0.76, z: -5.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -608,13 +609,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714369208}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00126, y: -0.00011, z: -0.00229}
+  m_LocalRotation: {x: 0.00000004470349, y: -0.17108952, z: 0.00000002980233, w: 0.98525554}
+  m_LocalPosition: {x: -0.0012600352, y: -0.00011000447, z: -0.0022899946}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 640012454}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -19.702, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
