@@ -10,7 +10,7 @@ public class Disparo : MonoBehaviour
 
     public GameObject flecha;
 
-    public float fuerza_flecha_maxima = 1500f;
+    public float fuerza_flecha_maxima;
 
     public float fuerza_flecha_minima = 0f;
 
@@ -42,14 +42,16 @@ public class Disparo : MonoBehaviour
             }
         }*/
         if (Touchscreen.current.primaryTouch.press.isPressed) { return; }
-            if(tiempo_de_disparo <= fuerza_flecha_maxima)
+        
+        if (tiempo_de_disparo <= 5500.0)
         {
-            tiempo_de_disparo += 20;
             tiempo_de_disparo += Time.deltaTime;
-            print(tiempo_de_disparo);
+            
         }
+
             if(Touchscreen.current.primaryTouch.press.wasReleasedThisFrame)
         {
+            print(tiempo_de_disparo);
             Disparar((int)tiempo_de_disparo);
             tiempo_de_disparo = 0;
 
@@ -66,7 +68,7 @@ public class Disparo : MonoBehaviour
         Vector3 potencia = new Vector3(tiempodeCarga, tiempodeCarga, tiempodeCarga);
         newflecha = Instantiate(flecha, spawn_flecha.position, spawn_flecha.rotation);
 
-        newflecha.GetComponent<Rigidbody>().AddForce(spawn_flecha.forward * fuerza_flecha_maxima);
+        newflecha.GetComponent<Rigidbody>().AddForce(spawn_flecha.forward * tiempodeCarga);
         cooldawn_disparo = Time.time + rango_disparo;
 
         Destroy(newflecha, 3);
