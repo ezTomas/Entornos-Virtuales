@@ -47,7 +47,7 @@ public class Disparo : MonoBehaviour
         }*/
         if (Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
-            flecha = Instantiate(flecha, spawn_flecha.position, spawn_flecha.rotation);
+            flecha = Instantiate(flechaPrefab, spawn_flecha.position, spawn_flecha.rotation);
             flecha.transform.SetParent(spawn_flecha);
             cargando = false;
         }
@@ -63,10 +63,13 @@ public class Disparo : MonoBehaviour
 
         if (Touchscreen.current.primaryTouch.press.wasReleasedThisFrame && cargando == true)
         {
-            flecha.GetComponent<Rigidbody>().linearVelocity = transform.forward * potencia_flecha;
-            flecha.GetComponent<Rigidbody>().isKinematic = false;
-            flecha.GetComponent<Flecha>().flechaEnVuelo = true;
             flecha.transform.SetParent(null);
+            flecha.GetComponent<Rigidbody>().isKinematic = false;
+            flecha.GetComponent<Rigidbody>().useGravity = true;
+            
+            flecha.GetComponent<Rigidbody>().linearVelocity = transform.forward * potencia_flecha;
+            flecha.GetComponent<Flecha>().flechaEnVuelo = true;
+            
             potencia_flecha = 0;
             cargando = false;
         }
