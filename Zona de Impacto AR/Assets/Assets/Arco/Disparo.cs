@@ -6,18 +6,22 @@ using UnityEngine.InputSystem;
 
 public class Disparo : MonoBehaviour
 {
+    private float cantidadFlecha;
     public Transform spawn_flecha;
 
     public GameObject flecha;
 
-    public float fuerza_flecha_maxima;
+    public GameObject flechaPrefab;
 
-    public float fuerza_flecha_minima = 0f;
+    public float fuerza_flecha;
+
+    public float potencia_flecha;
+
+    private bool cargando;
 
     private float tiempo_de_disparo;
 
-    public float rango_disparo = 1.0f;
-    private float cooldawn_disparo = 0;
+
 
     [SerializeField] private Transform ola;
 
@@ -41,46 +45,36 @@ public class Disparo : MonoBehaviour
 
             }
         }*/
-        if (Touchscreen.current.primaryTouch.press.isPressed) { return; }
-        
-        if (tiempo_de_disparo <= 5500.0)
+        if (Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
-            tiempo_de_disparo += Time.deltaTime;
+            flecha = Instantiate(flecha, spawn_flecha.position, spawn_flecha.rotation);
+            flecha.transform.SetParent(spawn_flecha);
+            cargando = false;
+        }
+
+        if (Touchscreen.current.primaryTouch.press.isPressed)
+        {
             
+            potencia_flecha += 0.05f + fuerza_flecha * Time.deltaTime;
+            potencia_flecha = Mathf.Clamp(potencia_flecha, 0, 30);
+            flecha.GetComponent<Flecha>().potenciaFinal = potencia_flecha;
+            cargando = true;
         }
 
-            if(Touchscreen.current.primaryTouch.press.wasReleasedThisFrame)
+        if (Touchscreen.current.primaryTouch.press.wasReleasedThisFrame && cargando == true)
         {
-            print(tiempo_de_disparo);
-            Disparar((int)tiempo_de_disparo);
-            tiempo_de_disparo = 0;
-
+            flecha.GetComponent<Rigidbody>().linearVelocity = transform.forward * potencia_flecha;
+            flecha.GetComponent<Rigidbody>().isKinematic = false;
+            flecha.GetComponent<Flecha>().flechaEnVuelo = true;
+            flecha.transform.SetParent(null);
+            potencia_flecha = 0;
+            cargando = false;
         }
 
 
         
     }
 
-    private void Disparar(int tiempodeCarga)
-    {
-        GameObject newflecha;
-
-        Vector3 potencia = new Vector3(tiempodeCarga, tiempodeCarga, tiempodeCarga);
-        newflecha = Instantiate(flecha, spawn_flecha.position, spawn_flecha.rotation);
-
-        newflecha.GetComponent<Rigidbody>().AddForce(spawn_flecha.forward * tiempodeCarga);
-        cooldawn_disparo = Time.time + rango_disparo;
-
-        Destroy(newflecha, 3);
-    }
-
-
-    private void Start()
-    {
-        
-
-
-    }
 
 
 }
