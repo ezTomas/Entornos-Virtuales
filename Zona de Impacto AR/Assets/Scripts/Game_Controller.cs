@@ -27,7 +27,11 @@ public class Game_Controller : MonoBehaviour
         foreach (ARPlane plano in planeManager.trackables)
         {
             Vector3 posicion = plano.center;
-            Instantiate(Blanco_Prefab, posicion, plano.transform.rotation);
+
+            Vector3 normal = plano.normal;
+            Quaternion rotacion = Quaternion.LookRotation(normal);
+
+            Instantiate(Blanco_Prefab, posicion, rotacion);
 
             Debug.Log("Blanco generado");
             return;
