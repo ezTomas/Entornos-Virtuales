@@ -55,7 +55,7 @@ public class Disparo : MonoBehaviour
         if (Touchscreen.current.primaryTouch.press.isPressed)
         {
             
-            potencia_flecha += 0.05f + fuerza_flecha * Time.deltaTime;
+            potencia_flecha += 0.1f + fuerza_flecha * Time.deltaTime;
             potencia_flecha = Mathf.Clamp(potencia_flecha, 0, 30);
             flecha.GetComponent<Flecha>().potenciaFinal = potencia_flecha;
             cargando = true;
