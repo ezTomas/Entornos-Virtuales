@@ -147,8 +147,8 @@ RectTransform:
   m_GameObject: {fileID: 258626543}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1994547441}
   m_Father: {fileID: 948017786}
@@ -407,6 +407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game_Controller
   planeManager: {fileID: 1901264870}
   Blanco_Prefab: {fileID: 7411590356634426877, guid: 300ef048458df8f40803cab16ab2a987, type: 3}
+  margenProporcional: 0.2
 --- !u!4 &887510194
 Transform:
   m_ObjectHideFlags: 0
