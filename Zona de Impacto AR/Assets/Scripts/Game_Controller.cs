@@ -5,11 +5,12 @@ using UnityEngine.XR.ARFoundation;
 public class Game_Controller : MonoBehaviour
 {
     [SerializeField] private ARPlaneManager planeManager;
-
     [SerializeField] private GameObject Blanco_Prefab;
 
     [Range(0f, 0.45f)]
     [SerializeField] private float margenProporcional = 0.20f;
+
+    [SerializeField] private GameObject BotonComenzar;
 
     private GameObject blancoActual;
     private bool juegoIniciado = false;
@@ -27,14 +28,49 @@ public class Game_Controller : MonoBehaviour
             return;
         }
 
+        // Comprobar que haya planos detectados antes de comenzar.
+        if (planeManager.trackables.count == 0)
+        {
+            Debug.LogWarning(
+                "Todavía no hay paredes detectadas. Escaneá la habitación."
+            );
+            return;
+        }
+
+        // Ocultar el botón.
+        if (BotonComenzar != null)
+        {
+            BotonComenzar.SetActive(false);
+        }
+
         juegoIniciado = true;
+
+        // Generar el primer blanco utilizando los planos detectados.
         SpawnearBlanco();
+
+        // Detener la detección de nuevos planos.
+        if (juegoIniciado)
+        {
+            planeManager.enabled = false;
+            Debug.Log("Detección de planos detenida.");
+        }
     }
+
     private void SpawnearBlanco()
     {
         if (blancoActual != null)
             return;
 
+        if (planeManager == null || Blanco_Prefab == null)
+        {
+            Debug.LogError(
+                "No se puede generar el blanco: faltan referencias."
+            );
+            juegoIniciado = false;
+            return;
+        }
+
+        // Recopilar los planos detectados.
         List<ARPlane> planos = new List<ARPlane>();
 
         foreach (ARPlane plano in planeManager.trackables)
@@ -44,19 +80,21 @@ public class Game_Controller : MonoBehaviour
 
         if (planos.Count == 0)
         {
-            Debug.LogWarning("Todavía no hay planos detectados.");
+            Debug.LogWarning(
+                "Todavía no hay planos detectados. Escaneá las paredes."
+            );
             juegoIniciado = false;
             return;
         }
 
-        // Elegir una pared al azar.
+        // Elegir un plano aleatorio.
         int indice = Random.Range(0, planos.Count);
         ARPlane planoElegido = planos[indice];
 
-        // Calcular una posición aleatoria dentro del plano.
+        // Obtener las dimensiones del plano.
         Vector2 tamano = planoElegido.size;
-        Vector3 centro = planoElegido.center;
 
+        // Aplicar márgenes proporcionales a ambos ejes.
         float margenX = tamano.x * margenProporcional;
         float margenY = tamano.y * margenProporcional;
 
@@ -70,30 +108,31 @@ public class Game_Controller : MonoBehaviour
              tamano.y / 2f - margenY
         );
 
-        Vector3 posicionLocal = centro + new Vector3(
-            desplazamientoX,
-            0f,
-            desplazamientoY
-        );
+        // El centro del plano ya está en coordenadas de sesión.
+        // Sumamos desplazamientos siguiendo sus ejes locales,
+        // expresados como direcciones en el mundo.
+        Vector3 posicionMundo = planoElegido.center
+            + planoElegido.transform.right * desplazamientoX
+            + planoElegido.transform.forward * desplazamientoY;
 
-        Vector3 posicionMundo =
-            planoElegido.transform.TransformPoint(posicionLocal);
-
-        // Conservar la orientación que ya funcionó en el celular.
+        // Mantener la orientación que ya funcionaba.
         Vector3 normal = planoElegido.normal;
         Quaternion rotacion = Quaternion.LookRotation(normal);
 
-        // Crear un único blanco.
+        // Instanciar un único blanco.
         blancoActual = Instantiate(
             Blanco_Prefab,
             posicionMundo,
             rotacion
         );
 
-        Debug.Log("Blanco generado correctamente.");
+        Debug.Log(
+            "Blanco generado en el plano: "
+            + planoElegido.trackableId
+        );
     }
 
-    // Función preparada para conectar con la mecánica de disparo.
+    // Preparado para conectarlo con la mecánica de disparo.
     public void EliminarBlancoActual()
     {
         if (blancoActual == null)
