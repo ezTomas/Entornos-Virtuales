@@ -1,36 +1,147 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
 public class Game_Controller : MonoBehaviour
 {
     [SerializeField] private ARPlaneManager planeManager;
-
     [SerializeField] private GameObject Blanco_Prefab;
+
+    [Range(0f, 0.45f)]
+    [SerializeField] private float margenProporcional = 0.20f;
+
+    [SerializeField] private GameObject BotonComenzar;
+
+    private GameObject blancoActual;
+    private bool juegoIniciado = false;
+
     public void ComenzarJuego()
     {
-        Debug.Log("El juego ha comenzado.");
+        if (juegoIniciado)
+            return;
 
-        if (planeManager == null)
+        if (planeManager == null || Blanco_Prefab == null)
         {
-            Debug.LogError("ARPlaneManager no está asignado.");
+            Debug.LogError(
+                "Falta asignar el AR Plane Manager o el prefab del blanco."
+            );
             return;
         }
 
-        foreach (ARPlane plano in planeManager.trackables)
+        // Comprobar que haya planos detectados antes de comenzar.
+        if (planeManager.trackables.count == 0)
         {
-            Debug.Log("Plano detectado: " + plano.trackableId);
+            Debug.LogWarning(
+                "Todavía no hay paredes detectadas. Escaneá la habitación."
+            );
+            return;
         }
+
+        // Ocultar el botón.
+        if (BotonComenzar != null)
+        {
+            BotonComenzar.SetActive(false);
+        }
+
+        juegoIniciado = true;
+
+        // Generar el primer blanco utilizando los planos detectados.
         SpawnearBlanco();
+
+        // Detener la detección de nuevos planos.
+        if (juegoIniciado)
+        {
+            planeManager.enabled = false;
+            Debug.Log("Detección de planos detenida.");
+        }
     }
+
     private void SpawnearBlanco()
     {
-        foreach (ARPlane plano in planeManager.trackables)
-        {
-            Vector3 posicion = plano.center;
-            Instantiate(Blanco_Prefab, posicion, plano.transform.rotation);
+        if (blancoActual != null)
+            return;
 
-            Debug.Log("Blanco generado");
+        if (planeManager == null || Blanco_Prefab == null)
+        {
+            Debug.LogError(
+                "No se puede generar el blanco: faltan referencias."
+            );
+            juegoIniciado = false;
             return;
         }
+
+        // Recopilar los planos detectados.
+        List<ARPlane> planos = new List<ARPlane>();
+
+        foreach (ARPlane plano in planeManager.trackables)
+        {
+            planos.Add(plano);
+        }
+
+        if (planos.Count == 0)
+        {
+            Debug.LogWarning(
+                "Todavía no hay planos detectados. Escaneá las paredes."
+            );
+            juegoIniciado = false;
+            return;
+        }
+
+        // Elegir un plano aleatorio.
+        int indice = Random.Range(0, planos.Count);
+        ARPlane planoElegido = planos[indice];
+
+        // Obtener las dimensiones del plano.
+        Vector2 tamano = planoElegido.size;
+
+        // Aplicar márgenes proporcionales a ambos ejes.
+        float margenX = tamano.x * margenProporcional;
+        float margenY = tamano.y * margenProporcional;
+
+        float desplazamientoX = Random.Range(
+            -tamano.x / 2f + margenX,
+             tamano.x / 2f - margenX
+        );
+
+        float desplazamientoY = Random.Range(
+            -tamano.y / 2f + margenY,
+             tamano.y / 2f - margenY
+        );
+
+        // El centro del plano ya está en coordenadas de sesión.
+        // Sumamos desplazamientos siguiendo sus ejes locales,
+        // expresados como direcciones en el mundo.
+        Vector3 posicionMundo = planoElegido.center
+            + planoElegido.transform.right * desplazamientoX
+            + planoElegido.transform.forward * desplazamientoY;
+
+        // Mantener la orientación que ya funcionaba.
+        Vector3 normal = planoElegido.normal;
+        Quaternion rotacion = Quaternion.LookRotation(normal);
+
+        // Instanciar un único blanco.
+        blancoActual = Instantiate(
+            Blanco_Prefab,
+            posicionMundo,
+            rotacion
+        );
+
+        Debug.Log(
+            "Blanco generado en el plano: "
+            + planoElegido.trackableId
+        );
+    }
+
+    // Preparado para conectarlo con la mecánica de disparo.
+    public void EliminarBlancoActual()
+    {
+        if (blancoActual == null)
+            return;
+
+        Destroy(blancoActual);
+        blancoActual = null;
+
+        if (juegoIniciado)
+            SpawnearBlanco();
     }
 }

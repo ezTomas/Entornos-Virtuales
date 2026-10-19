@@ -4,12 +4,12 @@ using UnityEngine.SceneManagement;
 public class MenuPrincipalManager : MonoBehaviour
 {
     [Tooltip("Nombre exacto de la escena donde ocurre el juego AR")]
-    public string nombreEscenaJuego = "EscenaJuegoAR";
+    public string nombreEscenaJuego = "Deteccion_planos";
 
     public void IniciarJuego()
     {
         // Carga la escena del juego de tiro al blanco
-        SceneManager.LoadScene(nombreEscenaJuego);
+        SceneManager.LoadScene("Deteccion_planos");
     }
 
     public void SalirJuego()
