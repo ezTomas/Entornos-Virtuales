@@ -32,7 +32,7 @@ using UnityEngine.InputSystem.Utilities;
 ///     private MyActions_Actions m_Actions;                  // Source code representation of asset.
 ///     private MyActions_Actions.PlayerActions m_Player;     // Source code representation of action map.
 ///
-///     void Awake()
+///     void Awake() 
 ///     {
 ///         m_Actions = new MyActions_Actions();              // Create asset object.
 ///         m_Player = m_Actions.Player;                      // Extract action map object.

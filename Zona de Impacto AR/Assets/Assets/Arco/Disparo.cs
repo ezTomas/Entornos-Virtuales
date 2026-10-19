@@ -26,30 +26,30 @@ public class Disparo : MonoBehaviour
     [SerializeField] private Transform ola;
 
     // Update is called once per frame
-    void Update()
+void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.V))
+        bool inicioPresion = false;
+        bool manteniendoPresion = false;
+        bool soltoPresion = false;
+
+        // 1. Detectar clic izquierdo del Mouse (para probar en el editor de PC)
+        if (Mouse.current != null)
         {
-            if (Time.time > cooldawn_disparo)
-            {
-                GameObject newflecha;
+            inicioPresion = Mouse.current.leftButton.wasPressedThisFrame;
+            manteniendoPresion = Mouse.current.leftButton.isPressed;
+            soltoPresion = Mouse.current.leftButton.wasReleasedThisFrame;
+        }
 
-                newflecha = Instantiate(flecha, spawn_flecha.position, spawn_flecha.rotation);
+        // 2. Detectar toque en la pantalla (para jugar en el celular)
+        if (Touchscreen.current != null)
+        {
+            inicioPresion = inicioPresion || Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
+            manteniendoPresion = manteniendoPresion || Touchscreen.current.primaryTouch.press.isPressed;
+            soltoPresion = soltoPresion || Touchscreen.current.primaryTouch.press.wasReleasedThisFrame;
+        }
 
-                newflecha.GetComponent<Rigidbody>().AddForce(spawn_flecha.forward * fuerza_flecha_maxima);
-
-                cooldawn_disparo = Time.time + rango_disparo;
-
-                Destroy(newflecha, 3);
-
-            }
-        }*/
-        if (Touchscreen.current == null)
-            return;
-
-
-        if (Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+        // 3. Lógica de disparo
+        if (inicioPresion)
         {
             flecha = Instantiate(
                 flechaPrefab,
@@ -62,7 +62,7 @@ public class Disparo : MonoBehaviour
             cargando = true;
         }
 
-        if (Touchscreen.current.primaryTouch.press.isPressed && cargando)
+        if (manteniendoPresion && cargando)
         {
             potencia_flecha += (20f / 5f) * Time.deltaTime;
             potencia_flecha = Mathf.Clamp(potencia_flecha, 0f, 20f);
@@ -70,7 +70,7 @@ public class Disparo : MonoBehaviour
             flecha.GetComponent<Flecha>().potenciaFinal = potencia_flecha;
         }
 
-        if (Touchscreen.current.primaryTouch.press.wasReleasedThisFrame && cargando == true)
+        if (soltoPresion && cargando == true)
         {
             flecha.transform.SetParent(null);
             flecha.GetComponent<Rigidbody>().isKinematic = false;
@@ -82,9 +82,6 @@ public class Disparo : MonoBehaviour
             potencia_flecha = 0;
             cargando = false;
         }
-
-
-        
     }
 
 

@@ -55,7 +55,9 @@ public class Game_Controller : MonoBehaviour
 
         // Generar el primer blanco utilizando los planos detectados.
         SpawnearBlanco();
+        FindAnyObjectByType<GameUIManager>().IniciarTemporizador();
     }
+
     void OcultarPlanosDetectados()
     {
         foreach (ARPlane plano in planeManager.trackables)
@@ -159,6 +161,7 @@ public class Game_Controller : MonoBehaviour
     }
 
     // Preparado para conectarlo con la mecánica de disparo.
+// Preparado para conectarlo con la mecánica de disparo.
     public void EliminarBlancoActual()
     {
         if (blancoActual == null)
@@ -166,6 +169,15 @@ public class Game_Controller : MonoBehaviour
 
         Destroy(blancoActual);
         blancoActual = null;
+
+        // --- CONEXIÓN CON TU INTERFAZ (TIEMPO Y PUNTAJE) ---
+        GameUIManager uiManager = FindFirstObjectByType<GameUIManager>();
+        if (uiManager != null)
+        {
+            // Suma 10 puntos y 5 segundos cada vez que aciertan
+            uiManager.RegistrarAcierto(10, 5f);
+        }
+        // ----------------------------------------------------
 
         if (juegoIniciado)
             SpawnearBlanco();
