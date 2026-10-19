@@ -45,20 +45,29 @@ public class Disparo : MonoBehaviour
 
             }
         }*/
+        if (Touchscreen.current == null)
+            return;
+
+
         if (Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
         {
-            flecha = Instantiate(flechaPrefab, spawn_flecha.position, spawn_flecha.rotation);
+            flecha = Instantiate(
+                flechaPrefab,
+                spawn_flecha.position,
+                spawn_flecha.rotation
+            );
+
             flecha.transform.SetParent(spawn_flecha);
-            cargando = false;
+            potencia_flecha = 0f;
+            cargando = true;
         }
 
-        if (Touchscreen.current.primaryTouch.press.isPressed)
+        if (Touchscreen.current.primaryTouch.press.isPressed && cargando)
         {
-            
-            potencia_flecha += 0.1f + fuerza_flecha * Time.deltaTime;
-            potencia_flecha = Mathf.Clamp(potencia_flecha, 0, 30);
+            potencia_flecha += (20f / 5f) * Time.deltaTime;
+            potencia_flecha = Mathf.Clamp(potencia_flecha, 0f, 20f);
+
             flecha.GetComponent<Flecha>().potenciaFinal = potencia_flecha;
-            cargando = true;
         }
 
         if (Touchscreen.current.primaryTouch.press.wasReleasedThisFrame && cargando == true)
