@@ -8,7 +8,8 @@ public class Flecha : MonoBehaviour
     Quaternion rotar;
     public float potenciaFinal;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool impactoRegistrado = false;
+
     void Start()
     {
         sumaFlecha = GameObject.FindGameObjectWithTag("arco");
@@ -16,18 +17,49 @@ public class Flecha : MonoBehaviour
         rotar = Quaternion.Euler(0, 0, -100);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (flechaEnVuelo == true && potenciaFinal <= 25)
         {
-            transform.rotation = (Quaternion.Lerp(transform.rotation, rotar, 2f * Time.deltaTime));
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                rotar,
+                2f * Time.deltaTime
+            );
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         flechaEnVuelo = false;
+
+        // Evitar registrar más de un impacto.
+        if (impactoRegistrado)
+            return;
+
+        // Comprobar si chocó con el blanco.
+        BlancoObjetivo blanco =
+            collision.collider.GetComponentInParent<BlancoObjetivo>();
+
+        if (blanco != null)
+        {
+            impactoRegistrado = true;
+
+            Game_Controller controlador =
+                FindFirstObjectByType<Game_Controller>();
+
+            if (controlador != null)
+            {
+                controlador.EliminarBlancoActual();
+            }
+
+            // Destruir la flecha al impactar el blanco.
+            Destroy(gameObject);
+            return;
+        }
+
+        // Si chocó con otra cosa, mantener
+        // el comportamiento original.
         StartCoroutine(tiempoDestruccion());
     }
 
@@ -37,4 +69,3 @@ public class Flecha : MonoBehaviour
         Destroy(gameObject);
     }
 }
- 
