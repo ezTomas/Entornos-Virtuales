@@ -45,15 +45,41 @@ public class Game_Controller : MonoBehaviour
 
         juegoIniciado = true;
 
-        // Generar el primer blanco utilizando los planos detectados.
-        SpawnearBlanco();
+        // Ocultar los rectángulos sin eliminar los planos.
+        OcultarPlanosDetectados();
 
         // Detener la detección de nuevos planos.
-        if (juegoIniciado)
+        planeManager.enabled = false;
+
+        Debug.Log("Detección de planos detenida.");
+
+        // Generar el primer blanco utilizando los planos detectados.
+        SpawnearBlanco();
+    }
+    void OcultarPlanosDetectados()
+    {
+        foreach (ARPlane plano in planeManager.trackables)
         {
-            planeManager.enabled = false;
-            Debug.Log("Detección de planos detenida.");
+            // Ocultar la malla visual del plano.
+            ARPlaneMeshVisualizer visualizador =
+                plano.GetComponent<ARPlaneMeshVisualizer>();
+
+            if (visualizador != null)
+            {
+                visualizador.enabled = false;
+            }
+
+            // Ocultar también los renderizadores asociados al plano.
+            Renderer[] renderers =
+                plano.GetComponentsInChildren<Renderer>(true);
+
+            foreach (Renderer r in renderers)
+            {
+                r.enabled = false;
+            }
         }
+
+        Debug.Log("Visualización de planos ocultada.");
     }
 
     private void SpawnearBlanco()
