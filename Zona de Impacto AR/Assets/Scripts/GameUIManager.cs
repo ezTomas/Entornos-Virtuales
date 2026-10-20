@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -35,7 +36,9 @@ public class GameUIManager : MonoBehaviour
             {
                 tiempoRestante = 0;
                 juegoActivo = false;
-                textoTiempo.text = "Tiempo restante: ¡AGOTADO!"; 
+                textoTiempo.text = "Tiempo restante: ¡AGOTADO!";
+
+                SceneManager.LoadScene("Menu_game_over");
             }
         }
     }
