@@ -153,7 +153,7 @@ public class Game_Controller : MonoBehaviour
             posicionMundo,
             rotacion
         );
-
+        
         Debug.Log(
             "Blanco generado en el plano: "
             + planoElegido.trackableId
