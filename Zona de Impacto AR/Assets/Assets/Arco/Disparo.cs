@@ -75,7 +75,7 @@ void Update()
             flecha.transform.SetParent(null);
             flecha.GetComponent<Rigidbody>().isKinematic = false;
             flecha.GetComponent<Rigidbody>().useGravity = true;
-            
+
             flecha.GetComponent<Rigidbody>().linearVelocity = transform.forward * potencia_flecha;
             flecha.GetComponent<Flecha>().flechaEnVuelo = true;
             
